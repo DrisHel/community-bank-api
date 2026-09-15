@@ -35,6 +35,36 @@ app.get("/", (_request, response) => {
 app.get("/accounts", (_request, response) => {
  return response.status(200).json(accounts);
 });
+app.post("/accounts", (request, response) => {
+ const { holderName, balance = 0 } = request.body as {
+  holderName?: unknown;
+  balance?: unknown;
+ };
+
+ if (typeof holderName !== "string" || holderName.trim() === "") {
+  return response.status(400).json({
+   message: "holderName is required"
+  });
+ }
+
+ if (typeof balance !== "number" || balance < 0) {
+  return response.status(400).json({
+   message: "balance must be a non-negative number"
+  });
+ }
+
+ const account = {
+  id: `acc-${String(accounts.length + 1).padStart(3, "0")}`,
+  accountNumber: `${String(accounts.length + 1).padStart(6, "0")}-${accounts.length + 5}`,
+  holderName: holderName.trim(),
+  balance,
+  status: "active"
+ };
+
+ accounts.push(account);
+
+ return response.status(201).json(account);
+});
 app.get("/health", (_request, response) => {
  return response.status(200).json({
  status: "ok"
