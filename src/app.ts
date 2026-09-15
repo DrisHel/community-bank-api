@@ -2,6 +2,7 @@ import express from "express";
 
 const app = express();
 app.use(express.json());
+app.use(express.static("public"));
 
 const accounts = [
  {
@@ -27,11 +28,6 @@ const accounts = [
  }
 ];
 
-app.get("/", (_request, response) => {
- return response.status(200).json({
- message: "Community Bank API"
- });
-});
 app.get("/accounts", (_request, response) => {
  return response.status(200).json(accounts);
 });
