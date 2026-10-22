@@ -20,7 +20,8 @@
       <nav class="nav" aria-label="Navegação principal">
         <a class="nav-link active" href="#overview"><span class="nav-icon">⌂</span>Visão geral</a>
         <a class="nav-link" href="#accounts"><span class="nav-icon">▤</span>Contas</a>
-        <a class="nav-link" href="#activity"><span class="nav-icon">↗</span>Atividade</a>
+        <a class="nav-link" href="#services"><span class="nav-icon">◈</span>Serviços</a>
+        <a class="nav-link" href="#reports"><span class="nav-icon">▥</span>Relatórios</a>
       </nav>
       <div class="sidebar-bottom">
         <div class="support-card">
@@ -76,14 +77,118 @@
         <div id="feedback" class="feedback" role="status"></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>CONTA</th><th>TITULAR</th><th>SALDO</th><th>STATUS</th><th></th></tr></thead>
+            <thead><tr><th>CONTA</th><th>TITULAR</th><th>SALDO</th><th>STATUS</th><th>AÇÕES</th></tr></thead>
             <tbody id="accounts-table"><tr><td colspan="5" class="loading">Carregando contas...</td></tr></tbody>
           </table>
         </div>
         <div class="table-footer"><span id="table-count">—</span><div class="pagination"><button disabled>‹</button><button class="current">1</button><button disabled>›</button></div></div>
       </section>
 
-      <section class="activity-section" id="activity"><div><p class="eyebrow">ATIVIDADE RECENTE</p><h2>Movimente a comunidade<br>com clareza.</h2></div><p class="activity-note">Os dados exibidos nesta tela são sincronizados<br>diretamente com a API do Community Bank.</p></section>
+      <section class="services-section" id="services">
+        <div class="section-heading">
+          <div><p class="eyebrow">BANCO COMUNITÁRIO</p><h2>Serviços para a comunidade</h2><p>Gerencie clientes, crédito, pagamentos e responsáveis.</p></div>
+        </div>
+        <div class="service-tabs" role="tablist" aria-label="Serviços bancários">
+          <button class="service-tab active" id="tab-customers" role="tab" aria-selected="true" aria-controls="panel-customers" data-panel="customers">Clientes</button>
+          <button class="service-tab" id="tab-credit" role="tab" aria-selected="false" aria-controls="panel-credit" data-panel="credit">Crédito</button>
+          <button class="service-tab" id="tab-cards" role="tab" aria-selected="false" aria-controls="panel-cards" data-panel="cards">Cartões</button>
+          <button class="service-tab" id="tab-payments" role="tab" aria-selected="false" aria-controls="panel-payments" data-panel="payments">Pagamentos</button>
+          <button class="service-tab" id="tab-benefits" role="tab" aria-selected="false" aria-controls="panel-benefits" data-panel="benefits">Benefícios</button>
+          <button class="service-tab" id="tab-managers" role="tab" aria-selected="false" aria-controls="panel-managers" data-panel="managers">Responsáveis</button>
+        </div>
+        <div id="service-feedback" class="feedback" role="status" aria-live="polite"></div>
+
+        <section class="service-panel active" id="panel-customers" role="tabpanel" aria-labelledby="tab-customers" data-service-panel="customers">
+          <div class="service-grid">
+            <form class="service-card service-form" id="customer-form">
+              <h3>Novo cliente</h3><p>Cadastre a pessoa titular da conta.</p>
+              <label>Nome completo<input name="name" required maxlength="160" placeholder="Ex.: Beatriz Lima"></label>
+              <label>E-mail <span class="optional">(opcional)</span><input name="email" type="email" placeholder="beatriz@email.com"></label>
+              <button class="primary-button full" type="submit">Cadastrar cliente <span>→</span></button>
+            </form>
+            <article class="service-card"><h3>Clientes cadastrados</h3><p>Clientes disponíveis para abertura de conta.</p><div id="customers-list" class="record-list" role="status">Carregando clientes...</div></article>
+          </div>
+        </section>
+
+        <section class="service-panel" id="panel-credit" role="tabpanel" aria-labelledby="tab-credit" data-service-panel="credit" hidden>
+          <div class="service-grid">
+            <form class="service-card service-form" id="credit-form">
+              <h3>Solicitar crédito</h3><p>Solicitações registradas com juros de 0% e status pendente.</p>
+              <label>Modalidade<select name="type"><option value="personal">Consumo pessoal ou familiar</option><option value="solidarity">Empreendimento solidário</option></select></label>
+              <label>Cliente<select name="customerId" class="customer-select" required></select></label>
+              <label>Conta vinculada <span class="optional">(opcional)</span><select name="accountId" class="account-select"><option value="">Sem conta vinculada</option></select></label>
+              <label id="enterprise-field" hidden>Nome do empreendimento<input name="enterpriseName" maxlength="160" placeholder="Ex.: Cooperativa local"></label>
+              <label>Finalidade<textarea name="purpose" required maxlength="500" rows="3" placeholder="Descreva como o crédito será utilizado"></textarea></label>
+              <label>Valor solicitado (R$)<input name="amount" type="number" min="0.01" step="0.01" required></label>
+              <button class="primary-button full" type="submit">Registrar solicitação <span>→</span></button>
+            </form>
+            <article class="service-card"><h3>Solicitações de crédito</h3><p>Pedidos recentes da comunidade.</p><div id="credit-list" class="record-list" role="status">Carregando solicitações...</div></article>
+          </div>
+        </section>
+
+        <section class="service-panel" id="panel-cards" role="tabpanel" aria-labelledby="tab-cards" data-service-panel="cards" hidden>
+          <div class="service-grid">
+            <form class="service-card service-form" id="card-form">
+              <h3>Solicitar cartão popular</h3><p>Registre um pedido associado a uma conta ativa.</p>
+              <label>Conta<select name="accountId" class="account-select" required></select></label>
+              <label>Nome no cartão<input name="cardholderName" required maxlength="160" placeholder="Nome do titular"></label>
+              <button class="primary-button full" type="submit">Registrar pedido <span>→</span></button>
+            </form>
+            <article class="service-card"><h3>Pedidos de cartão</h3><p>Status e titular da solicitação.</p><div id="cards-list" class="record-list" role="status">Carregando pedidos...</div></article>
+          </div>
+        </section>
+
+        <section class="service-panel" id="panel-payments" role="tabpanel" aria-labelledby="tab-payments" data-service-panel="payments" hidden>
+          <div class="service-grid">
+            <form class="service-card service-form" id="payment-form">
+              <h3>Pagar uma conta</h3><p>O pagamento é registrado e debitado imediatamente do saldo.</p>
+              <label>Conta de origem<select name="accountId" class="account-select" required></select></label>
+              <label>Beneficiário<input name="payee" required maxlength="160" placeholder="Ex.: Companhia de energia"></label>
+              <label>Descrição<input name="description" required maxlength="240" placeholder="Ex.: Fatura de outubro"></label>
+              <label>Valor (R$)<input name="amount" type="number" min="0.01" step="0.01" required></label>
+              <button class="primary-button full" type="submit">Confirmar pagamento <span>→</span></button>
+            </form>
+            <article class="service-card"><h3>Pagamentos recentes</h3><label>Filtrar por conta<select id="payment-account-filter" class="account-select"></select></label><div id="payments-list" class="record-list" role="status">Selecione uma conta.</div></article>
+          </div>
+        </section>
+
+        <section class="service-panel" id="panel-benefits" role="tabpanel" aria-labelledby="tab-benefits" data-service-panel="benefits" hidden>
+          <div class="service-grid">
+            <form class="service-card service-form" id="benefit-form">
+              <h3>Registrar benefício</h3><p>O valor recebido será creditado na conta selecionada.</p>
+              <label>Conta<select name="accountId" class="account-select" required></select></label>
+              <label>Tipo de benefício<input name="benefitType" required maxlength="120" placeholder="Ex.: Aposentadoria"></label>
+              <label>Número de referência <span class="optional">(opcional)</span><input name="reference" maxlength="120" placeholder="Identificador do benefício"></label>
+              <label>Valor recebido (R$)<input name="amount" type="number" min="0.01" step="0.01" required></label>
+              <button class="primary-button full" type="submit">Registrar recebimento <span>→</span></button>
+            </form>
+            <article class="service-card"><h3>Benefícios registrados</h3><label>Filtrar por conta<select id="benefit-account-filter" class="account-select"></select></label><div id="benefits-list" class="record-list" role="status">Selecione uma conta.</div></article>
+          </div>
+        </section>
+
+        <section class="service-panel" id="panel-managers" role="tabpanel" aria-labelledby="tab-managers" data-service-panel="managers" hidden>
+          <div class="service-grid">
+            <form class="service-card service-form" id="manager-form">
+              <h3>Adicionar responsável</h3><p>Associe uma pessoa responsável ou gerente a uma conta.</p>
+              <label>Conta<select name="accountId" class="account-select" required></select></label>
+              <label>Nome<input name="name" required maxlength="160"></label>
+              <label>E-mail<input name="email" type="email" required maxlength="200"></label>
+              <label>Função<select name="role"><option value="responsavel">Responsável</option><option value="gerente">Gerente</option></select></label>
+              <button class="primary-button full" type="submit">Adicionar responsável <span>→</span></button>
+            </form>
+            <article class="service-card"><h3>Responsáveis por conta</h3><label>Conta<select id="manager-account-filter" class="account-select"></select></label><div id="managers-list" class="record-list" role="status">Selecione uma conta.</div></article>
+          </div>
+        </section>
+      </section>
+
+      <section class="reports-section" id="reports">
+        <div class="section-heading"><div><p class="eyebrow">TRANSPARÊNCIA</p><h2>Prestação de contas</h2><p>Resumo das movimentações dos últimos períodos.</p></div></div>
+        <div class="report-actions"><button class="report-button active" data-period="daily">Resumo diário</button><button class="report-button" data-period="weekly">Resumo semanal</button></div>
+        <div id="report-feedback" class="feedback" role="status" aria-live="polite"></div>
+        <div id="report-results" class="report-grid" role="status"><p class="loading">Carregando relatório...</p></div>
+      </section>
+
+      <section class="activity-section" id="activity"><div><p class="eyebrow">ATIVIDADE RECENTE</p><h2>Movimente a comunidade<br>com clareza.</h2></div><p class="activity-note">Contas e serviços comunitários<br>conectados à API do banco.</p></section>
     </main>
   </div>
 
@@ -92,7 +197,24 @@
       <button class="close-button" id="close-modal" aria-label="Fechar">×</button>
       <p class="eyebrow">NOVA CONTA</p><h2 id="modal-title">Abra espaço<br>para alguém novo.</h2>
       <p class="modal-copy">Cadastre uma conta para fazer parte da comunidade.</p>
-      <form id="account-form"><label>Nome do titular<input name="holderName" type="text" placeholder="Ex.: Beatriz Lima" required></label><label>Saldo inicial<input name="balance" type="number" min="0" step="0.01" value="0" required></label><button class="primary-button full" type="submit">Criar conta <span>→</span></button><p class="form-error" id="form-error"></p></form>
+      <form id="account-form"><label>Cliente cadastrado<select name="customerId" id="account-customer-select"></select></label><p class="form-hint">Se preferir, informe um novo titular abaixo para cadastrar o cliente junto com a conta.</p><label>Nome do novo titular<input name="holderName" type="text" placeholder="Ex.: Beatriz Lima"></label><label>Saldo inicial<input name="balance" type="number" min="0" step="0.01" value="0" required></label><button class="primary-button full" type="submit">Criar conta <span>→</span></button><p class="form-error" id="form-error"></p></form>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="movement-modal" aria-hidden="true">
+    <section class="modal movement-modal" role="dialog" aria-modal="true" aria-labelledby="movement-title">
+      <button class="close-button" id="close-movement-modal" aria-label="Fechar">×</button>
+      <p class="eyebrow">MOVIMENTAÇÃO DA CONTA</p><h2 id="movement-title">Depósito ou saque</h2>
+      <p class="modal-copy" id="movement-account"></p>
+      <form id="movement-form">
+        <label>Operação<select name="type" required><option value="deposit">Depósito</option><option value="withdrawal">Saque</option></select></label>
+        <label>Valor<input name="amount" type="number" min="0.01" step="0.01" placeholder="0,00" required></label>
+        <button class="primary-button full" type="submit">Confirmar movimentação <span>→</span></button>
+        <p class="form-error" id="movement-error"></p>
+      </form>
+      <div class="movement-history">
+        <h3>Extrato da conta</h3>
+        <div id="movement-history-list" class="history-list" role="status">Carregando extrato...</div>
+      </div>
     </section>
   </div>
   <script src="/app.js"></script>
